@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import Icon from '@/components/ui/icon'
+import TelegramNotifications from '@/components/TelegramNotifications'
 
 interface HTTPStats {
   totalRequests: number
@@ -37,7 +38,7 @@ const Index = () => {
   })
 
   const [selectedMethod, setSelectedMethod] = useState<string>('ALL')
-  const [currentPage, setCurrentPage] = useState<'dashboard' | 'analytics'>('dashboard')
+  const [currentPage, setCurrentPage] = useState<'dashboard' | 'analytics' | 'notifications'>('dashboard')
   const [isLoading, setIsLoading] = useState(false)
 
   // Mock data for the graph
@@ -295,7 +296,7 @@ const Index = () => {
 
         {/* Navigation */}
         <div className="flex items-center justify-between">
-          <Tabs value={currentPage} onValueChange={(value) => setCurrentPage(value as 'dashboard' | 'analytics')}>
+          <Tabs value={currentPage} onValueChange={(value) => setCurrentPage(value as 'dashboard' | 'analytics' | 'notifications')}>
             <TabsList className="bg-card border border-border">
               <TabsTrigger value="dashboard" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 <Icon name="BarChart3" size={16} className="mr-2" />
@@ -304,6 +305,10 @@ const Index = () => {
               <TabsTrigger value="analytics" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 <Icon name="TrendingUp" size={16} className="mr-2" />
                 Аналитика
+              </TabsTrigger>
+              <TabsTrigger value="notifications" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                <Icon name="Bell" size={16} className="mr-2" />
+                Уведомления
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -331,7 +336,8 @@ const Index = () => {
         </div>
 
         {/* Conditional Page Rendering */}
-        {currentPage === 'analytics' ? <AnalyticsPage /> : (
+        {currentPage === 'analytics' ? <AnalyticsPage /> : 
+         currentPage === 'notifications' ? <TelegramNotifications /> : (
           <>
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -591,6 +597,7 @@ const Index = () => {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start border-border hover:border-primary/50"
+                    onClick={() => setCurrentPage('notifications')}
                   >
                     <Icon name="Bell" size={16} className="mr-2" />
                     Настроить уведомления
